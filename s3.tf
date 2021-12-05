@@ -47,6 +47,11 @@ data "aws_iam_policy_document" "artifacts-policy-document" {
   statement {
     sid    = "PublicReadGetObject"
     effect = "Allow"
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
     actions = [
       "s3:GetObject"
     ]
