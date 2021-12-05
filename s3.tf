@@ -40,9 +40,8 @@ resource "aws_s3_bucket" "artifacts" {
 
 resource "aws_s3_bucket_policy" "artifacts-policy" {
   bucket = aws_s3_bucket.artifacts.id
-  policy = data.aws_iam_policy_document.s3_read_permissions.json
+  policy = data.aws_iam_policy_document.artifacts-policy-document.json
 }
-
 
 data "aws_iam_policy_document" "artifacts-policy-document" {
   statement {
