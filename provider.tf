@@ -9,6 +9,11 @@ terraform {
 }
 
 provider "aws" {
-  alias  = "west-2"
-  region = "us-west-2"
+  region = "us-east-1"
+
+  default_tags {
+    tags = {
+      automation = "Terraform"
+    }
+  }
 }
