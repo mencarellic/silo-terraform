@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "github-actions-app-deployment" {
     resources = ["${aws_s3_bucket.artifacts.arn}/*"]
   }
   statement {
-    sid = "DeployToS3Object"
+    sid = "ListBuckets"
     actions = [
       "s3:ListBucket*"
     ]
