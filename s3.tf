@@ -54,27 +54,7 @@ resource "aws_s3_bucket_policy" "artifacts-policy" {
       }
     ]
   })
-  # policy = data.aws_iam_policy_document.artifacts-policy-document.json
 }
-
-# data "aws_iam_policy_document" "artifacts-policy-document" {
-#   statement {
-#     sid    = "PublicReadGetObject"
-#     effect = "Allow"
-#     principals {
-#       type        = "*"
-#       identifiers = ["*"]
-#     }
-
-#     actions = [
-#       "s3:GetObject"
-#     ]
-
-#     resources = [
-#       "${aws_s3_bucket.artifacts.arn}/*"
-#     ]
-#   }
-# }
 
 resource "aws_s3_bucket_public_access_block" "artifacts-public-access-block" {
   bucket = aws_s3_bucket.artifacts.id
@@ -102,6 +82,11 @@ resource "aws_s3_bucket_object" "placeholder-index" {
   key     = "index.html"
   content = "Hello World"
 
+  metadata = {
+    content-type        = "text/html"
+    content-disposition = "inline; filename=index.html"
+  }
+
   lifecycle {
     ignore_changes = [
       content
@@ -113,6 +98,11 @@ resource "aws_s3_bucket_object" "placeholder-error" {
   bucket  = aws_s3_bucket.artifacts.id
   key     = "error.html"
   content = "Error!"
+
+  metadata = {
+    content-type        = "text/html"
+    content-disposition = "inline; filename=error.html"
+  }
 
   lifecycle {
     ignore_changes = [
