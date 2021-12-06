@@ -51,8 +51,32 @@ resource "aws_cloudfront_distribution" "public-www-redirect" {
   aliases         = ["${data.aws_route53_zone.public.name}"]
   is_ipv6_enabled = true
 
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate.public.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+
   default_cache_behavior {
-    target_origin_id = aws_cloudfront_distribution.public.id
+    target_origin_id       = aws_cloudfront_distribution.public.id
+    compress               = true
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
   }
 
   origin {
