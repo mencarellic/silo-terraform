@@ -19,6 +19,15 @@ data "aws_iam_policy_document" "github-actions-app-deployment" {
     ]
     resources = ["*"]
   }
+  statement {
+    sid = "AllowCacheInvalidation"
+    actions = [
+      "cloudfront:CreateInvalidation"
+    ]
+    resources = [
+      aws_cloudfront_distribution.public.arn
+    ]
+  }
 }
 
 resource "aws_iam_user_policy" "github-actions-app-deployment" {
