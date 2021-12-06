@@ -7,6 +7,36 @@ resource "aws_s3_bucket" "logging" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "logging-public-access-block" {
+  bucket = aws_s3_bucket.logging.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "logging-policy" {
+  bucket = aws_s3_bucket.logging.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Sid" : "AllowLogging",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "logging.s3.amazonaws.com"
+        },
+        "Action" : [
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ],
+        "Resource" : "${aws_s3_bucket.logging.arn}/*"
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket" "artifacts" {
   bucket = "mencarelli-silo-web-app-artifacts"
   acl    = "public-read"
