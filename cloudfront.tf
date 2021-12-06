@@ -17,21 +17,28 @@ resource "aws_cloudfront_distribution" "public" {
   }
 
   origin {
-    origin_id   = "frontend_static_content"
+    origin_id   = "silo-web-app"
     domain_name = aws_s3_bucket.artifacts.bucket_domain_name
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.public.cloudfront_access_identity_path
     }
-
   }
 
   default_cache_behavior {
-    target_origin_id       = "frontend_static_content"
+    target_origin_id       = "silo-web-app"
     compress               = true
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "allow-all"
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
   }
 
   tags = {
