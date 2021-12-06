@@ -83,8 +83,8 @@ resource "aws_s3_bucket_object" "placeholder-index" {
   content = "Hello World"
 
   metadata = {
-    Content-Type        = "text/html"
-    Content-Disposition = "inline; filename=index.html"
+    content-type        = "text/html"
+    content-disposition = "inline; filename=index.html"
   }
 
   lifecycle {
@@ -100,8 +100,8 @@ resource "aws_s3_bucket_object" "placeholder-error" {
   content = "Error!"
 
   metadata = {
-    Content-Type        = "text/html"
-    Content-Disposition = "inline; filename=error.html"
+    content-type        = "text/html"
+    content-disposition = "inline; filename=error.html"
   }
 
   lifecycle {
