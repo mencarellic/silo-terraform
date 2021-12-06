@@ -98,3 +98,21 @@ resource "aws_s3_bucket_public_access_block" "www-redirect-public-access-block" 
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_policy" "www-redirect-policy" {
+  bucket = aws_s3_bucket.www-redirect.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Sid" : "AllowCloudfrontOnly",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : aws_cloudfront_origin_access_identity.public.iam_arn
+        },
+        "Action" : "s3:GetObject",
+        "Resource" : "${aws_s3_bucket.www-redirect.arn}/*"
+      }
+    ]
+  })
+}
