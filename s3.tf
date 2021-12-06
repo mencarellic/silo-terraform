@@ -41,13 +41,18 @@ resource "aws_s3_bucket" "artifacts" {
 resource "aws_s3_bucket_policy" "artifacts-policy" {
   bucket = aws_s3_bucket.artifacts.id
   policy = jsonencode({
-    "Sid" : "AllowCloudfrontOnly",
-    "Effect" : "Allow",
-    "Principal" : {
-      "AWS" : aws_cloudfront_origin_access_identity.public.iam_arn
-    },
-    "Action" : "s3:GetObject",
-    "Resource" : "${aws_s3_bucket.artifacts.arn}/*"
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Sid" : "AllowCloudfrontOnly",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : aws_cloudfront_origin_access_identity.public.iam_arn
+        },
+        "Action" : "s3:GetObject",
+        "Resource" : "${aws_s3_bucket.artifacts.arn}/*"
+      }
+    ]
   })
   # policy = data.aws_iam_policy_document.artifacts-policy-document.json
 }

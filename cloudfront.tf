@@ -17,7 +17,7 @@ resource "aws_cloudfront_distribution" "public" {
   }
 
   origin {
-    origin_id   = "silo-web-app"
+    origin_id   = aws_s3_bucket.artifacts.id
     domain_name = aws_s3_bucket.artifacts.bucket_domain_name
 
     s3_origin_config {
@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "public" {
   }
 
   default_cache_behavior {
-    target_origin_id       = "silo-web-app"
+    target_origin_id       = aws_s3_bucket.artifacts.id
     compress               = true
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
