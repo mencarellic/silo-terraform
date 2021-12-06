@@ -12,10 +12,22 @@ resource "aws_route53_record" "acm-validation" {
     }
   }
 
+  zone_id         = data.aws_route53_zone.public.zone_id
   allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.public.zone_id
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.public.zone_id
+  name    = "www.${data.aws_route53_zone.public.name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.public.domain_name
+    zone_id                = aws_cloudfront_distribution.public.hosted_zone_id
+    evaluate_target_health = false
+  }
 }
