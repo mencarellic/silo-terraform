@@ -68,7 +68,7 @@ resource "aws_cloudfront_distribution" "public-www-redirect" {
     compress               = true
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    viewer_protocol_policy = "redirect-to-https"
+    viewer_protocol_policy = "allow-all"
 
     forwarded_values {
       query_string = false
