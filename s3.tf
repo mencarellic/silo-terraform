@@ -76,37 +76,3 @@ resource "aws_s3_bucket" "www-redirect" {
     Name = "mencarelli-silo-web-app-www-redirect"
   }
 }
-
-resource "aws_s3_bucket_object" "placeholder-index" {
-  bucket  = aws_s3_bucket.artifacts.id
-  key     = "index.html"
-  content = "Hello World"
-
-  metadata = {
-    content-type        = "text/html"
-    content-disposition = "inline; filename=index.html"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      content
-    ]
-  }
-}
-
-resource "aws_s3_bucket_object" "placeholder-error" {
-  bucket  = aws_s3_bucket.artifacts.id
-  key     = "error.html"
-  content = "Error!"
-
-  metadata = {
-    content-type        = "text/html"
-    content-disposition = "inline; filename=error.html"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      content
-    ]
-  }
-}
