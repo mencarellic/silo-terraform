@@ -51,6 +51,19 @@ resource "aws_s3_bucket_policy" "artifacts-policy" {
         },
         "Action" : "s3:GetObject",
         "Resource" : "${aws_s3_bucket.artifacts.arn}/*"
+      },
+      {
+        "Sid" : "AllowDeployment",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : aws_iam_user.github-actions-app-deployment.arn
+        },
+        "Action" : [
+          "s3:PutObject*",
+          "s3:GetObject*",
+          "s3:DeleteObject*"
+        ],
+        "Resource" : "${aws_s3_bucket.artifacts.arn}/*"
       }
     ]
   })
@@ -75,4 +88,31 @@ resource "aws_s3_bucket" "www-redirect" {
   tags = {
     Name = "mencarelli-silo-web-app-www-redirect"
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "www-redirect-public-access-block" {
+  bucket = aws_s3_bucket.www-redirect.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "www-redirect-policy" {
+  bucket = aws_s3_bucket.www-redirect.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Sid" : "AllowCloudfrontOnly",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : aws_cloudfront_origin_access_identity.public.iam_arn
+        },
+        "Action" : "s3:GetObject",
+        "Resource" : "${aws_s3_bucket.www-redirect.arn}/*"
+      }
+    ]
+  })
 }

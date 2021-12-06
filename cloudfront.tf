@@ -83,11 +83,8 @@ resource "aws_cloudfront_distribution" "public-www-redirect" {
     domain_name = aws_s3_bucket.www-redirect.website_endpoint
     origin_id   = aws_cloudfront_distribution.public.id
 
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "match-viewer"
-      origin_ssl_protocols   = ["TLSv1.2"]
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.public.cloudfront_access_identity_path
     }
   }
 
