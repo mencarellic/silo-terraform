@@ -40,27 +40,37 @@ resource "aws_s3_bucket" "artifacts" {
 
 resource "aws_s3_bucket_policy" "artifacts-policy" {
   bucket = aws_s3_bucket.artifacts.id
-  policy = data.aws_iam_policy_document.artifacts-policy-document.json
+  policy = jsonencode({
+    "Sid" : "AllowCloudfrontOnly",
+    "Effect" : "Allow",
+    "Principal" : {
+      "AWS" : aws_cloudfront_origin_access_identity.public.iam_arn
+    },
+    "Action" : "s3:GetObject",
+    "Resource" : "${aws_s3_bucket.artifacts.arn}/*"
+  })
+  # policy = data.aws_iam_policy_document.artifacts-policy-document.json
 }
 
-data "aws_iam_policy_document" "artifacts-policy-document" {
-  statement {
-    sid    = "PublicReadGetObject"
-    effect = "Allow"
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
+# data "aws_iam_policy_document" "artifacts-policy-document" {
+#   statement {
+#     sid    = "PublicReadGetObject"
+#     effect = "Allow"
+#     principals {
+#       type        = "*"
+#       identifiers = ["*"]
+#     }
 
-    actions = [
-      "s3:GetObject"
-    ]
+#     actions = [
+#       "s3:GetObject"
+#     ]
 
-    resources = [
-      "${aws_s3_bucket.artifacts.arn}/*"
-    ]
-  }
-}
+#     resources = [
+#       "${aws_s3_bucket.artifacts.arn}/*"
+#     ]
+#   }
+# }
+
 resource "aws_s3_bucket_public_access_block" "artifacts-public-access-block" {
   bucket = aws_s3_bucket.artifacts.id
 
